@@ -1,22 +1,22 @@
 class ClientsController < ApplicationController
 
     def show
-        render json: Client.find(params[:id]), status: :ok  
+        client = Client.find_by(id:params[:id])
+          if client
+            render json: { client:client, total_fees:client.total_fees}, status: :ok
+          else
+            render json: { error:"Client not found" }, status: :bad_request
+            end
     end
 
-    # def show
-    #     client = Client.find(params[:id])
-    #     memberships = client.memberships.all.length
-    #       if client
-    #         # WHYYYYYYY
-    #         render json: {client, memberships}, status: :ok
-    #       else
-    #         render json: { "error":"Client not found" }, status: :bad_request
-    #         end
-    #end
-
     def update
-        render json: Client.find(params[:id]).update(client_params), status: :ok
+        new_client = Client.find_by(id:params[:id])
+          if new_client
+            new_client.update(client_params)
+            render json: new_client, status: :ok
+          else
+            render json: { error: "Client not found" }
+          end
     end
 
     private
